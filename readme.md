@@ -57,17 +57,22 @@ terraform apply -var vpc_id=$VPC_ID -var subnet_id=$SUBNET_ID
 ## `Connect to Jenkins url (output of terraform) and activate Security`
 
 * Warning (top red box) on first startup
+
 ![Unsecure](../master/img/unsecure.jpg)
 
 * Enabling Security
+
 ![Enable Security](../master/img/secure1.jpg)
 
 * Update admin account
+
 ![Update admin account](../master/img/manage_admin_user.jpg)
 
 * Change admin password
+
 ![Set admin password](../master/img/set_admin_password.jpg)
 
 * Back to security tab, only allow logged-in users
+
 ![Allow only logged-in users](../master/img/secure2.jpg)
 
