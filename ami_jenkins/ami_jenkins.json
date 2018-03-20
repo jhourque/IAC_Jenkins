@@ -49,7 +49,7 @@
                 "sudo sed -i 's#<useSecurity>true</useSecurity>#<useSecurity>false</useSecurity>#' /var/lib/jenkins/config.xml",
                 "cd /var/lib/jenkins/plugins/; sudo /tmp/get_plugins.sh",
                 "sudo apt-get install -y zip",
-                "wget https://releases.hashicorp.com/terraform/0.10.8/terraform_0.10.8_linux_amd64.zip -O /tmp/terraform.zip",
+                "wget https://releases.hashicorp.com/terraform/0.11.4/terraform_0.11.4_linux_amd64.zip -O /tmp/terraform.zip",
                 "cd /tmp; unzip /tmp/terraform.zip",
                 "sudo install /tmp/terraform /usr/bin",
                 "wget https://releases.hashicorp.com/packer/1.1.1/packer_1.1.1_linux_amd64.zip -O /tmp/packer.zip",
