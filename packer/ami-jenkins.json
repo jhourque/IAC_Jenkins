@@ -1,0 +1,95 @@
+{
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "{{user `region`}}",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "name": "{{user `source_ami_name`}}",
+        "root-device-type": "ebs"
+      },
+      "owners": ["{{user `source_ami_owner`}}"],
+      "most_recent": true
+    },
+    "instance_type": "t2.micro",
+    "ssh_username": "{{user `ssh_username`}}",
+    "ami_name": "{{user `ami_name`}}-{{timestamp}}",
+    "security_group_filter": {
+      "filters": {
+        "tag:Name": "sg_packer"
+      }
+    },
+    "subnet_filter": {
+      "filters": {
+        "tag:Packer": "yes"
+      },
+      "most_free": true,
+      "random": false
+    },
+    "vpc_filter": {
+      "filters": {
+        "tag:Packer": "yes"
+      }
+    },
+    "communicator": "ssh",
+    "ena_support": true,
+    "tags": {
+      "Name": "{{user `ami_name`}}",
+      "Version": "{{user `ami_version`}}",
+      "Base_AMI_Name": "{{ .SourceAMIName }}"
+    }
+  }],
+  "provisioners": [
+      {
+          "type": "shell",
+          "inline":[
+            "mkdir -p /tmp/scripts"
+          ]
+      },
+      {
+          "type": "file",
+          "source": "scripts/",
+          "destination": "/tmp/scripts/"
+      },
+      {
+          "type": "shell",
+          "inline":[
+            "set -x",
+            "set -e",
+            "sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo",
+            "sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key",
+            "sudo yum upgrade -y",
+            "sudo yum install -y jenkins java-1.8.0-openjdk-devel",
+            "sudo systemctl stop jenkins",
+            "sudo systemctl enable jenkins",
+            "sudo sed -i 's/JENKINS_JAVA_OPTIONS=\\(.*\\)\"$/JENKINS_JAVA_OPTIONS=\\1 -Djenkins.install.runSetupWizard=false\"/' /etc/sysconfig/jenkins",
+            "sudo ls -R /tmp",
+            "sudo mkdir -p /var/lib/jenkins/init.groovy.d",
+            "sudo mv /tmp/scripts/groovy/* /var/lib/jenkins/init.groovy.d/",
+            "sudo chown -R jenkins:jenkins /var/lib/jenkins/init.groovy.d/",
+            "cd /tmp/scripts/plugins/; ./get_plugins.sh",
+            "sudo mv /tmp/scripts/plugins /var/lib/jenkins",
+            "sudo chown -R jenkins:jenkins /var/lib/jenkins/plugins",
+            "sudo yum install -y zip",
+            "wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip -O /tmp/terraform.zip",
+            "cd /tmp; unzip /tmp/terraform.zip",
+            "sudo install /tmp/terraform /usr/bin",
+            "sudo rm -rf /tmp/scripts"
+          ]
+      }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    },
+    {
+      "type": "shell-local",
+      "inline": [
+        "AMI_ID=`jq -r '.builds[-1].artifact_id' manifest.json | cut -d ':' -f2`",
+        "aws --region {{user `region`}} ssm put-parameter --name '{{user `ssm_parameter_name`}}' --type String --value ${AMI_ID} --overwrite"
+      ]
+    }
+  ]
+}
