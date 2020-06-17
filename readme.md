@@ -1,4 +1,4 @@
-# Infrastructure as Code Labs
+# IAC Jenkins deployment in AWS
 
 Terraform & Packer used to deploy Jenkins instance in AWS.
 
