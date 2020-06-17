@@ -61,6 +61,7 @@ run-condition-extras.hpi
 run-condition.hpi
 scm-api.hpi
 script-security.hpi
+snakeyaml-api.hpi
 ssh-agent.hpi
 ssh-credentials.hpi
 ssh-slaves.hpi

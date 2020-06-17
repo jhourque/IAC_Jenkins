@@ -3,3 +3,5 @@
 terraform.tfstate*
 terraform.backup
 *.swp
+jenkins-cli.jar
+manifest.json
