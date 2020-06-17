@@ -17,7 +17,7 @@ output:
 
 get_password:
 	@ip=$$(../.bin/terraform output jenkins_ip); \
-	ssh -i ~/.ssh/id_rsa.iac ec2-user@$${ip} 'sudo cat /var/lib/jenkins/adminpassword.txt; echo'
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa.iac ec2-user@$${ip} 'sudo cat /var/lib/jenkins/adminpassword.txt; echo'
 
 env:
 	@env

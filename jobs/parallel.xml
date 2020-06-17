@@ -1,0 +1,40 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.39">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.7.0"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.7.0">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.80">
+    <script>pipeline {
+    agent { node {label &quot;master&quot; }}
+
+    stages {
+        stage(&quot;Run in Parallel&quot;) {
+            parallel {
+                stage(&quot;thread 1&quot;) {
+                    steps {
+                        build job: &quot;COMMON/nothing&quot;
+                    }
+                }
+                stage(&quot;thread 2&quot;) {
+                    steps {
+                        build job: &quot;COMMON/nothing&quot;, parameters: [string(name: &quot;text&quot;, value: &quot;info from thread 2&quot;)]
+                    }
+                }
+            }
+        }  
+    }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
