@@ -3,8 +3,8 @@ setup-binaries:
 	@ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa.iac
 	@rm -rf .bin
 	@mkdir .bin
-	@wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip -O .bin/terraform.zip
-	@wget https://releases.hashicorp.com/packer/1.6.0/packer_1.6.0_linux_amd64.zip -O .bin/packer.zip
+	@wget https://releases.hashicorp.com/terraform/1.0.5/terraform_1.0.5_linux_amd64.zip -O .bin/terraform.zip
+	@wget https://releases.hashicorp.com/packer/1.7.0/packer_1.7.0_linux_amd64.zip -O .bin/packer.zip
 	@unzip .bin/terraform.zip -d .bin
 	@unzip .bin/packer.zip -d .bin
 
