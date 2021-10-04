@@ -39,17 +39,6 @@
       {
           "type": "shell",
           "inline":[
-            "mkdir -p /tmp/scripts"
-          ]
-      },
-      {
-          "type": "file",
-          "source": "scripts/",
-          "destination": "/tmp/scripts/"
-      },
-      {
-          "type": "shell",
-          "inline":[
             "set -x",
             "set -e",
             "sudo apt-get update",
@@ -58,22 +47,7 @@
             "sudo wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -",
             "sudo sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
             "sudo sudo apt-get update",
-            "sudo sudo apt-get install -y jenkins",
-            "sudo systemctl stop jenkins",
-            "sudo systemctl enable jenkins",
-            "sudo sed -i 's/JENKINS_JAVA_OPTIONS=\\(.*\\)\"$/JENKINS_JAVA_OPTIONS=\\1 -Djenkins.install.runSetupWizard=false\"/' /etc/sysconfig/jenkins",
-            "sudo ls -R /tmp",
-            "sudo mkdir -p /var/lib/jenkins/init.groovy.d",
-            "sudo mv /tmp/scripts/groovy/* /var/lib/jenkins/init.groovy.d/",
-            "sudo chown -R jenkins:jenkins /var/lib/jenkins/init.groovy.d/",
-            "cd /tmp/scripts/plugins/; ./get_plugins.sh",
-            "sudo mv /tmp/scripts/plugins /var/lib/jenkins",
-            "sudo chown -R jenkins:jenkins /var/lib/jenkins/plugins",
-            "sudo yum install -y zip",
-            "wget https://releases.hashicorp.com/terraform/0.12.26/terraform_0.12.26_linux_amd64.zip -O /tmp/terraform.zip",
-            "cd /tmp; unzip /tmp/terraform.zip",
-            "sudo install /tmp/terraform /usr/bin",
-            "sudo rm -rf /tmp/scripts"
+            "sudo sudo apt-get install -y jenkins"
           ]
       }
   ],
