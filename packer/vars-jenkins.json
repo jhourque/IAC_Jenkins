@@ -1,8 +1,8 @@
 {
   "ami_name": "jenkins",
   "ami_version": "1.0",
-  "source_ami_name": "amzn2-ami-hvm-2.0.*-x86_64-gp2",
-  "source_ami_owner": "amazon",
-  "ssh_username": "ec2-user",
+  "source_ami_name": "ubuntu-*-20.04-amd64-server-*",
+  "source_ami_owner": "099720109477",
+  "ssh_username": "ubuntu",
   "ssm_parameter_name": "/project/jenkins"
 }
