@@ -7,7 +7,7 @@ Terraform & Packer used to deploy Jenkins instance in AWS.
 * Init config
 
 ```sh
-make init
+make setup-binaries
 ```
 
 * Set AWS credentials
@@ -19,7 +19,12 @@ export AWS_DEFAULT_REGION="<region>"
 ```
 
 Tag subnet and vpc with tag: Packer = yes
-Create SG named sg_packer (tag name)
+
+If required, you can also let the project create a single subnet
+```sh
+make setup-packer-vpc
+```
+
 
 * build AMI with packer
 

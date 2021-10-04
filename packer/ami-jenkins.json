@@ -14,11 +14,7 @@
     "instance_type": "t2.micro",
     "ssh_username": "{{user `ssh_username`}}",
     "ami_name": "{{user `ami_name`}}-{{timestamp}}",
-    "security_group_filter": {
-      "filters": {
-        "tag:Name": "sg_packer"
-      }
-    },
+    "associate_public_ip_address": true,
     "subnet_filter": {
       "filters": {
         "tag:Packer": "yes"
