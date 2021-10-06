@@ -6,17 +6,13 @@ setup-binaries:
 	@unzip .bin/terraform.zip -d .bin
 	@unzip .bin/packer.zip -d .bin
 
-.PHONY: packer terraform jobs
+.PHONY: packer terraform
 
 packer:
 	@cd packer; make build
 
 terraform:
 	@cd terraform; make init apply
-
-jobs:
-	@scp -r -i ~/.ssh/id_rsa.iac jobs ec2-user@$$(cd terraform; ../.bin/terraform output jenkins_ip):
-	@ssh -i ~/.ssh/id_rsa.iac ec2-user@$$(cd terraform; ../.bin/terraform output jenkins_ip) "cd jobs; ./import_jobs.sh"
 
 setup-packer-vpc:
 	@cd packer-vpc; ../.bin/terraform init; ../.bin/terraform apply -auto-approve

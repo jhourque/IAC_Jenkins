@@ -18,8 +18,10 @@ resource "aws_security_group" "sg_jenkins" {
   }
 }
 
-data "aws_ssm_parameter" "ami_jenkins" {
-  name = "/project/jenkins"
+resource "aws_ssm_parameter" "jenkins" {
+  name  = "/project/jenkins/instance"
+  type  = "String"
+  value = aws_instance.jenkins.id
 }
 
 resource "aws_instance" "jenkins" {

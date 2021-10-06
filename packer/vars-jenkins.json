@@ -4,5 +4,5 @@
   "source_ami_name": "ubuntu-*-20.04-amd64-server-*",
   "source_ami_owner": "099720109477",
   "ssh_username": "ubuntu",
-  "ssm_parameter_name": "/project/jenkins"
+  "ssm_parameter_name": "/project/jenkins/ami"
 }

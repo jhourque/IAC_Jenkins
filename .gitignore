@@ -6,3 +6,4 @@ terraform.backup
 jenkins-cli.jar
 manifest.json
 *.tfvars
+*.zip

@@ -1,3 +1,7 @@
+data "aws_ssm_parameter" "ami_jenkins" {
+  name = "/project/jenkins/ami"
+}
+
 data "aws_subnet" "subnet" {
   id = var.subnet_id
 }
