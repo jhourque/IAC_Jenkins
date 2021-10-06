@@ -22,18 +22,13 @@ data "aws_ssm_parameter" "ami_jenkins" {
   name = "/project/jenkins"
 }
 
-resource "aws_key_pair" "iac_keypair" {
-  key_name   = "iac_keypair"
-  public_key = file("~/.ssh/id_rsa.iac.pub")
-}
-
 resource "aws_instance" "jenkins" {
   ami                         = data.aws_ssm_parameter.ami_jenkins.value
-  instance_type               = "t2.micro"
-  key_name                    = aws_key_pair.iac_keypair.id
+  instance_type               = "t3.small"
   vpc_security_group_ids      = [aws_security_group.sg_jenkins.id]
   subnet_id                   = data.aws_subnet.subnet.id
   associate_public_ip_address = var.public_ip
+  iam_instance_profile        = aws_iam_instance_profile.jenkins.name
 
   tags = {
     Name = "Jenkins Automation"
@@ -57,4 +52,38 @@ resource "aws_route53_record" "jenkins" {
   type    = "A"
   ttl     = "300"
   records = var.static_ip ? [aws_eip.jenkins[0].public_ip] : (var.public_ip ? [aws_instance.jenkins.public_ip] : [aws_instance.jenkins.private_ip])
+}
+
+resource "aws_iam_role" "jenkins" {
+  name = "jenkins-instance-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonSSMManagedInstanceCore" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "CloudWatchAgentServerPolicy" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_instance_profile" "jenkins" {
+  name = "jenkins-instance-profile"
+  role = aws_iam_role.jenkins.name
 }
