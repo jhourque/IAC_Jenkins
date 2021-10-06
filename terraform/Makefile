@@ -4,20 +4,16 @@ init:
 	@TF_VAR_myip=${myip} ../.bin/terraform init
 
 plan:
-	@TF_VAR_myip=${myip} ../.bin/terraform plan
+	@TF_VAR_myip=${myip} ../.bin/terraform plan -var-file=../terraform.tfvars
 
 apply:
-	@TF_VAR_myip=${myip} ../.bin/terraform apply
+	@TF_VAR_myip=${myip} ../.bin/terraform apply -var-file=../terraform.tfvars
 
 destroy:
-	@TF_VAR_myip=${myip} ../.bin/terraform destroy
+	@TF_VAR_myip=${myip} ../.bin/terraform destroy -var-file=../terraform.tfvars
 
 output:
-	@TF_VAR_myip=${myip} ../.bin/terraform output
-
-get_password:
-	@ip=$$(../.bin/terraform output jenkins_ip); \
-	ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa.iac ec2-user@$${ip} 'sudo cat /var/lib/jenkins/adminpassword.txt; echo'
+	@TF_VAR_myip=${myip} ../.bin/terraform output -var-file=../terraform.tfvars
 
 env:
 	@env

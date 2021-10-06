@@ -5,16 +5,16 @@ resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-      "Packer" = "yes"
+    "Packer" = "yes"
   }
 }
 
 resource "aws_subnet" "subnet" {
-  vpc_id            = aws_vpc.vpc.id
-  cidr_block        = "10.0.0.0/24"
+  vpc_id     = aws_vpc.vpc.id
+  cidr_block = "10.0.0.0/24"
 
   tags = {
-      "Packer" = "yes"
+    "Packer" = "yes"
   }
 }
 

@@ -5,3 +5,4 @@ terraform.backup
 *.swp
 jenkins-cli.jar
 manifest.json
+*.tfvars

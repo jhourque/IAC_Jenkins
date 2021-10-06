@@ -1,60 +1,22 @@
-resource "aws_security_group" "sg_jenkins" {
-    name        = "allow_http"
-    description = "Allow http inbound traffic"
-    vpc_id = data.aws_vpc.vpc.id
-    
-    ingress {
-        from_port   = 22
-        to_port     = 22
-        protocol    = "tcp"
-        cidr_blocks = ["${var.myip}/32"]
-    }
-    ingress {
-        from_port   = 8080
-        to_port     = 8080
-        protocol    = "tcp"
-        cidr_blocks = ["${var.myip}/32"]
-    }
-    egress {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+provider "aws" {
+  region = "eu-west-1"
 }
 
-data "aws_ssm_parameter" "ami_jenkins" {
-  name = "/project/jenkins"
+module "jenkins" {
+  source           = "./modules/jenkins"
+  subnet_id        = var.subnet_id == null ? module.vpc[0].subnet_ids[0] : var.subnet_id
+  hosted_zone_name = var.hosted_zone_name
+  public_ip        = true
+  static_ip        = true
 }
 
-#data "aws_ami" "iac-jenkins" {
-#  most_recent = true
-#  filter {
-#    name   = "name"
-#    values = ["jenkins*"]
-#  }
-#  filter {
-#    name   = "virtualization-type"
-#    values = ["hvm"]
-#  }
-#  owners = ["self"]
-#}
+module "vpc" {
+  source = "./modules/vpc"
+  count  = var.subnet_id == null ? 1 : 0
 
-resource "aws_key_pair" "iac_keypair" {
-  key_name   = "iac_keypair"
-  public_key = file("~/.ssh/id_rsa.iac.pub")
+  name             = "Automation"
+  subnet_name      = "Automation"
+  cidr             = "10.0.0.0/16"
+  subnet_cidr_list = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
+  subnet_suffix    = "Public"
 }
-
-resource "aws_instance" "jenkins" {
-  #ami                    = data.aws_ami.iac-jenkins.id
-  ami                    = data.aws_ssm_parameter.ami_jenkins.value
-  instance_type          = "t2.micro"
-  key_name               = aws_key_pair.iac_keypair.id
-  vpc_security_group_ids = [aws_security_group.sg_jenkins.id]
-  subnet_id              = data.aws_subnet.subnet.id
-
-  tags = {
-    Name = "iac_jenkins"
-  }
-}
-
