@@ -1,7 +1,19 @@
+locals {
+  domain_name = "jenkins.${var.hosted_zone_name}"
+}
+
 resource "aws_security_group" "sg_jenkins" {
   name        = "allow_http"
   description = "Allow http inbound traffic"
   vpc_id      = data.aws_subnet.subnet.vpc_id
+
+  # Port 80 is required for certbot init (letsencrypt)
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     from_port   = 443
@@ -31,6 +43,10 @@ resource "aws_instance" "jenkins" {
   subnet_id                   = data.aws_subnet.subnet.id
   associate_public_ip_address = var.public_ip
   iam_instance_profile        = aws_iam_instance_profile.jenkins.name
+  user_data = templatefile("${path.module}/user-data.tpl", {
+    domain_name   = local.domain_name
+    backup_bucket = aws_s3_bucket.jenkins_backup.bucket
+  })
 
   tags = {
     Name = "Jenkins Automation"
@@ -50,7 +66,7 @@ resource "aws_eip_association" "jenkins" {
 
 resource "aws_route53_record" "jenkins" {
   zone_id = data.aws_route53_zone.primary.zone_id
-  name    = "jenkins.${var.hosted_zone_name}"
+  name    = local.domain_name
   type    = "A"
   ttl     = "300"
   records = var.static_ip ? [aws_eip.jenkins[0].public_ip] : (var.public_ip ? [aws_instance.jenkins.public_ip] : [aws_instance.jenkins.private_ip])
@@ -88,4 +104,29 @@ resource "aws_iam_role_policy_attachment" "CloudWatchAgentServerPolicy" {
 resource "aws_iam_instance_profile" "jenkins" {
   name = "jenkins-instance-profile"
   role = aws_iam_role.jenkins.name
+}
+
+resource "aws_s3_bucket" "jenkins_backup" {
+  bucket = "fr.revolve.esiea.jenkins.backup.${data.aws_caller_identity.current.account_id}"
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "jenkins_backup" {
+  bucket = aws_s3_bucket.jenkins_backup.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }

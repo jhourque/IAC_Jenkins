@@ -1,55 +1,71 @@
 {
-  "builders": [{
-    "type": "amazon-ebs",
-    "region": "{{user `region`}}",
-    "source_ami_filter": {
-      "filters": {
-        "virtualization-type": "hvm",
-        "name": "{{user `source_ami_name`}}",
-        "root-device-type": "ebs"
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "{{user `region`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "{{user `source_ami_name`}}",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "{{user `source_ami_owner`}}"
+        ],
+        "most_recent": true
       },
-      "owners": ["{{user `source_ami_owner`}}"],
-      "most_recent": true
-    },
-    "instance_type": "t2.micro",
-    "ssh_username": "{{user `ssh_username`}}",
-    "ami_name": "{{user `ami_name`}}-{{timestamp}}",
-    "associate_public_ip_address": true,
-    "subnet_filter": {
-      "filters": {
-        "tag:Packer": "yes"
+      "instance_type": "t2.micro",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ami_name": "{{user `ami_name`}}-{{timestamp}}",
+      "associate_public_ip_address": true,
+      "subnet_filter": {
+        "filters": {
+          "tag:Packer": "yes"
+        },
+        "most_free": true,
+        "random": false
       },
-      "most_free": true,
-      "random": false
-    },
-    "vpc_filter": {
-      "filters": {
-        "tag:Packer": "yes"
+      "vpc_filter": {
+        "filters": {
+          "tag:Packer": "yes"
+        }
+      },
+      "communicator": "ssh",
+      "ena_support": true,
+      "tags": {
+        "Name": "{{user `ami_name`}}",
+        "Version": "{{user `ami_version`}}",
+        "Base_AMI_Name": "{{ .SourceAMIName }}"
       }
-    },
-    "communicator": "ssh",
-    "ena_support": true,
-    "tags": {
-      "Name": "{{user `ami_name`}}",
-      "Version": "{{user `ami_version`}}",
-      "Base_AMI_Name": "{{ .SourceAMIName }}"
     }
-  }],
+  ],
   "provisioners": [
-      {
-          "type": "shell",
-          "inline":[
-            "set -x",
-            "set -e",
-            "sudo apt-get update",
-            "sudo apt-get upgrade -y",
-            "sudo apt-get install -y unattended-upgrades default-jre",
-            "sudo wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -",
-            "sudo sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'",
-            "sudo sudo apt-get update",
-            "sudo sudo apt-get install -y jenkins"
-          ]
-      }
+    {
+      "type": "shell",
+      "inline": [
+        "mkdir -p /tmp/scripts"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "scripts/",
+      "destination": "/tmp/scripts/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "set -x",
+        "set -e",
+        "sudo chmod +x /tmp/scripts/install.sh",
+        "sudo /tmp/scripts/install.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "rm -Rf /tmp/scripts/"
+      ]
+    }
   ],
   "post-processors": [
     {

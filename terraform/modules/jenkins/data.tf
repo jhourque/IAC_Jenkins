@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 data "aws_ssm_parameter" "ami_jenkins" {
   name = "/project/jenkins/ami"
 }
