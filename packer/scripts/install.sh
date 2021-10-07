@@ -7,7 +7,8 @@ export DEBIAN_FRONTEND=noninteractive
 function update_system() {
   apt-get update
   apt-get upgrade -y -q
-  apt-get install -y -q apt-transport-https jq python-pip unattended-upgrades
+  apt-get install -y -q apt-transport-https jq unattended-upgrades
+  apt-get install -y -q python3-pip
   pip install awscli
 }
 

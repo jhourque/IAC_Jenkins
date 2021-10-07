@@ -21,8 +21,8 @@ systemctl restart nginx
 # Configure custom backups
 apt-get install -y -q cron
 pip install jenkins-backup-s3
-backup-jenkins --bucket=${backup_bucket}
-crontab -l | { cat; echo "0 0 0 0 0 backup-jenkins --bucket=${backup_bucket}"; } | crontab -
+backup-jenkins --bucket=${backup_bucket} create
+crontab -l | { cat; echo "0 0 0 0 0 backup-jenkins --bucket=${backup_bucket} create"; } | crontab -
 
 # Finally, start Jenkins
 systemctl restart jenkins

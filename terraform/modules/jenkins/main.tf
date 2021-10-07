@@ -101,6 +101,25 @@ resource "aws_iam_role_policy_attachment" "CloudWatchAgentServerPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+resource "aws_iam_role_policy" "jenkins" {
+  name = "jenkins-policy"
+  role = aws_iam_role.jenkins.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:PutObject",
+        ]
+        Effect   = "Allow"
+        Resource = [
+          aws_s3_bucket.jenkins_backup.arn
+        ]
+      },
+    ]
+  })
+}
 resource "aws_iam_instance_profile" "jenkins" {
   name = "jenkins-instance-profile"
   role = aws_iam_role.jenkins.name
