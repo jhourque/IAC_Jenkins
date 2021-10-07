@@ -62,26 +62,6 @@ function create_awslogs_conf() {
             "log_stream_name": "{instance_id}/cloud-init.log"
           },
           {
-            "file_path": "/var/log/auth.log",
-            "log_group_name": "${log_group_name}",
-            "log_stream_name": "{instance_id}/auth.log"
-          },
-          {
-            "file_path": "/var/log/boot.log",
-            "log_group_name": "${log_group_name}",
-            "log_stream_name": "{instance_id}/boot.log"
-          },
-          {
-            "file_path": "/var/log/dpkg.log",
-            "log_group_name": "${log_group_name}",
-            "log_stream_name": "{instance_id}/dpkg.log"
-          },
-          {
-            "file_path": "/var/log/kern.log",
-            "log_group_name": "${log_group_name}",
-            "log_stream_name": "{instance_id}/kern.log"
-          },
-          {
             "file_path": "/var/log/nginx/error.log",
             "log_group_name": "${log_group_name}",
             "log_stream_name": "{instance_id}/nginx/error.log"
