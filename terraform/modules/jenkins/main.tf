@@ -114,7 +114,7 @@ resource "aws_iam_role_policy" "jenkins" {
         ]
         Effect   = "Allow"
         Resource = [
-          aws_s3_bucket.jenkins_backup.arn
+          "${aws_s3_bucket.jenkins_backup.arn}/*"
         ]
       },
     ]
