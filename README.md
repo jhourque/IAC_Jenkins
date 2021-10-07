@@ -40,14 +40,3 @@ make packer
 make terraform
 ```
 answer yes to terraform apply cmd
-
-## Get admin password
-```sh
-cd terraform
-make get_password
-```
-
-## Import jobs
-```
-make jobs
-```
