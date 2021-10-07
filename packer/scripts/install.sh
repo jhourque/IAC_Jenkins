@@ -48,32 +48,32 @@ function create_awslogs_conf() {
         "collect_list": [
           {
             "file_path": "/var/log/user-data.log",
-            "log_group_name": "${log_group_name}",
+            "log_group_name": "/project/jenkins",
             "log_stream_name": "{instance_id}/user-data.log"
           },
           {
             "file_path": "/var/log/cloud-init-output.log",
-            "log_group_name": "${log_group_name}",
+            "log_group_name": "/project/jenkins",
             "log_stream_name": "{instance_id}/cloud-init-output.log"
           },
           {
             "file_path": "/var/log/cloud-init.log",
-            "log_group_name": "${log_group_name}",
+            "log_group_name": "/project/jenkins",
             "log_stream_name": "{instance_id}/cloud-init.log"
           },
           {
             "file_path": "/var/log/nginx/error.log",
-            "log_group_name": "${log_group_name}",
+            "log_group_name": "/project/jenkins",
             "log_stream_name": "{instance_id}/nginx/error.log"
           },
           {
             "file_path": "/var/log/letsencrypt/letsencrypt.log",
-            "log_group_name": "${log_group_name}",
+            "log_group_name": "/project/jenkins",
             "log_stream_name": "{instance_id}/letsencrypt/letsencrypt.log"
           },
           {
             "file_path": "/var/log/jenkins-backup.log",
-            "log_group_name": "${log_group_name}",
+            "log_group_name": "/project/jenkins",
             "log_stream_name": "{instance_id}/jenkins-backup.log"
           }
         ]
