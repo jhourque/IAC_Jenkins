@@ -90,6 +90,11 @@ function create_awslogs_conf() {
             "file_path": "/var/log/letsencrypt/letsencrypt.log",
             "log_group_name": "${log_group_name}",
             "log_stream_name": "{instance_id}/letsencrypt/letsencrypt.log"
+          },
+          {
+            "file_path": "/var/log/jenkins-backup.log",
+            "log_group_name": "${log_group_name}",
+            "log_stream_name": "{instance_id}/jenkins-backup.log"
           }
         ]
       }

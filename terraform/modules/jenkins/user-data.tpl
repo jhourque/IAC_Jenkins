@@ -22,7 +22,7 @@ systemctl restart nginx
 apt-get install -y -q cron
 pip install jenkins-backup-s3
 backup-jenkins --bucket=${backup_bucket} create
-crontab -l | { cat; echo "0 0 0 0 0 backup-jenkins --bucket=${backup_bucket} create"; } | crontab -
+crontab -l | { cat; echo "0 0 * * * backup-jenkins --bucket=${backup_bucket} create > /var/log/jenkins-backup.log"; } | crontab -
 
 # Finally, start Jenkins
 systemctl restart jenkins
